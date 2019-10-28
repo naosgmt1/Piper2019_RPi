@@ -3,28 +3,29 @@
 import RPi.GPIO as GPIO
 import time
 
-LedPin = 15    # pin15
+LedPin = 15    # pin15 --- led
+BtnPin = 12    # pin12 --- button
 
 def setup():
-    GPIO.setmode(GPIO.BOARD)       # Numbers pins by physical location
-    GPIO.setup(LedPin, GPIO.OUT)   # Set pin mode as output
-    GPIO.output(LedPin, GPIO.HIGH) # Set pin to high(+3.3V) to off the led
+    GPIO.setmode(GPIO.BOARD)       # Numbers GPIOs by physical location
+    GPIO.setup(LedPin, GPIO.OUT)   # Set LedPin's mode is output
+    GPIO.setup(BtnPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
+    GPIO.output(LedPin, GPIO.HIGH) # Set LedPin high(+3.3V) to make led off
 
 def loop():
     while True:
-        for i in range(1,6):
+        if GPIO.input(BtnPin) == GPIO.LOW: # Check whether the button is pressed.
             print ('...led on')
             GPIO.output(LedPin, GPIO.LOW)  # led on
-            time.sleep(0.1)
+        else:
             print ('led off...')
             GPIO.output(LedPin, GPIO.HIGH) # led off
-            time.sleep(0.1)
-        input("input CR")
+        time.sleep(0.5)
 
 def destroy():
     GPIO.output(LedPin, GPIO.HIGH)     # led off
     GPIO.cleanup()                     # Release resource
-    print('- cleanup GPIO -')
+    print('-- cleanup GPIO!! --')
 
 if __name__ == '__main__':     # Program start from here
     setup()
@@ -32,4 +33,3 @@ if __name__ == '__main__':     # Program start from here
         loop()
     except KeyboardInterrupt:  # When 'Ctrl+C' is pressed, the child program destroy() will be  executed.
         destroy()
-

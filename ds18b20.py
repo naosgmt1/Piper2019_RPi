@@ -36,7 +36,7 @@ def readSensors():
 def loop():
     while True:
         readSensors()
-        time.sleep(2)
+        time.sleep(20)
 
 # Nothing to cleanup
 def destroy():

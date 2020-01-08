@@ -15,10 +15,10 @@ def loop():
         for i in range(1,6):
             print ('...led on')
             GPIO.output(LedPin, GPIO.LOW)  # led on
-            time.sleep(0.1)
+            time.sleep(0.05)
             print ('led off...')
             GPIO.output(LedPin, GPIO.HIGH) # led off
-            time.sleep(0.1)
+            time.sleep(0.05)
         input("input CR")
 
 def destroy():

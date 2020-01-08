@@ -10,7 +10,7 @@ GPIO.output(15, GPIO.HIGH)     # Set pin to high(+3.3V) to off the led
 
 for i in range(1,10):
         
-        print ('...led on')
+        print ('...led on テスト日本語')
         GPIO.output(15, GPIO.LOW)  # led on
         time.sleep(0.5)
         

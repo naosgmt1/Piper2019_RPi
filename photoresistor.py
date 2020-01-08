@@ -13,6 +13,7 @@ def loop():
         #res = ADC0832.getResult(1)  <-- Use this to read the second channel
 
         res = ADC0832.getResult() - 80
+        print ('%d' % res)
         if res < 0:
             res = 0
         if res > 100:

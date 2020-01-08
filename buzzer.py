@@ -12,14 +12,14 @@ p = GPIO.PWM(BZRPin, 50) # init frequency: 50HZ
 p.start(50) # Duty cycle: 50%
 try:
     while True:
-        for f in range(220, 880, 10):
+        for f in range(220, 1760, 10):
             p.ChangeFrequency(f)
             time.sleep(0.01)
 
         for f in range(0, 4):
             p.ChangeFrequency(923.32)
             time.sleep(0.2)
-            p.ChangeFrequency(880)
+            p.ChangeFrequency(3520)
             time.sleep(0.2)
 
 except KeyboardInterrupt:

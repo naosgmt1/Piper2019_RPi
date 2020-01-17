@@ -1,0 +1,29 @@
+{
+"source url":"https://directory.shoutcast.com",
+"stations":[
+{
+	"station": "Cool Jazz Global", 
+	"link": "http://yp.shoutcast.com/sbin/tunein-station.m3u?id=1605192"
+},
+{
+	"station": "Cool Jazz FLA", 
+	"link": "http://yp.shoutcast.com/sbin/tunein-station.m3u?id=1794791"
+},
+{
+	"station": "Loungemain Jazz-Chill-Funk",
+	"link": "http://yp.shoutcast.com/sbin/tunein-station.m3u?id=210975"
+},
+{
+	"station": "113FM Watercolors",
+	"link": "http://yp.shoutcast.com/sbin/tunein-station.m3u?id=1786314"
+},
+{
+	"station": "Public Domain Jazz - Swiss Internet Radio", 
+	"link": "http://yp.shoutcast.com/sbin/tunein-station.m3u?id=1709845"
+},
+{
+	"station": "Cool Jazz New York", 
+	"link": "http://yp.shoutcast.com/sbin/tunein-station.m3u?id=1782029"
+}
+]
+}

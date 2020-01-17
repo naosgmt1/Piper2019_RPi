@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>Main Menu</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+		<meta name="viewport" content="width=410, initial-scale=0.9">
+		</head>
+    <body>
+        <div class="container">
+            <div class="content">
+				  <br>
+          <h1><font>Dell EMC UDS Sales</font></h1>
+          <h2>A Music Play Manager - as After Training Demo on PIED PIPER Wave2 @ 2020 </h2>
+              <br><br>
+          <a href="upload_music.html" class="btn-blue">UPLOAD A MUSIC</a>
+	      <br><br>
+	  <a href="showmusics.html" class="btn-blue">SEE ALL MUSICS</a>
+              <br><br>
+          <a href="aboutus" class="btn-blue">ABOUT</a>
+				  <br><br>
+      	  <div style="padding: 6px 6px;"><b>
+				  <!--Reviews received: {{reviews}}<br>-->
+				  Musics uploaded: {{musics}}<br>
+				  Unique visitors: {{ucount}} <br>
+				  </b></div>
+          <a href="https://www.dellemc.com/en-sg/storage/ecs/index.htm#collapse">
+          <img src="{{ url_for('static', filename='ecs.png') }}" width="270" >
+
+            </div>
+        </div>
+    </body>
+</html>

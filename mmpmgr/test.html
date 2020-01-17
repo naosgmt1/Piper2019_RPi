@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <link rel=stylesheet type=text/css href="static/style.css">
+    <meta name="viewport" content="width=410, initial-scale=0.90">
+
+  </head>
+  <body>
+     <div class="container">
+     <div class="content">
+     <img src="static/logo.png" width="270" />
+     <h2>Total musics uploaded: {} </h2>
+     <a href="/"><h3>Back to main menu</h3></a>
+     <form action="setplaylist" method="post">
+        <body style="background-color: grey;">
+            <input type="checkbox" name=musicfile value=testv1>test1
+            <input type="checkbox" name=musicfile value=testv2>test2
+            <input type="checkbox" name=musicfile value=testv3>test3
+            <input type="checkbox" name=musicfile value=testv4>test4
+        </body>
+        <br><br>
+        <h2>STATIONS LIST</h2>
+        <h4>picked up from shoutcast.com</h4>
+        <body style="backgroune-color: grey;">
+            <select name="stationslist" size="4">
+               <option value=stationurl-1>Station Name 1</option>
+               <option value=stationurl-2>Station Name 2</option>
+               <option value=stationurl-3>Station Name 3</option>
+               <option value=stationurl-4>Station Name 4</option>
+               <option value=stationurl-5>Station Name 5</option>
+               <option value=stationurl-6>Station Name 6</option>
+               <option value=stationurl-7>Station Name 7</option>
+            </select>
+            <br><br>
+            <input class="btn-blue" type="submit" value="SET PLAYLIST">
+            <br><br>
+        </body>
+     </form>
+  </body>
+</html>
+

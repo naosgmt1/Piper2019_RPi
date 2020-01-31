@@ -1,0 +1,5 @@
+---
+applications:
+- name: app_mmpmgr
+  memory: 1G
+  buildpack: https://github.com/cloudfoundry/python-buildpack.git#v1.7.6

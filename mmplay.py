@@ -100,4 +100,4 @@ if __name__ == "__main__":
           print ("a command, " + cmdlist['operation'] + ", was found, but ")
           print ("this command was requested on " + cmdlist['entry date'])
           print ("then, was done on " + cmdlist['kicked date'] + "\n")
-       
+       sleep(15)

@@ -83,16 +83,17 @@ if __name__ == "__main__":
 
              if (f[0] == 200):
                 print (f[1].splitlines()) # should delete
-                rtrncde = playvlc(f[1]).returncode
-                if (rtrncde == 0):
-                   print ("### successful to kick vlc ###\n")
-                else:
+                rtrncde = playvlc(f[1]).poll()
+                if (rtrncde):
                    print ("### fail to kick vlc : code = " + rtrncde + " ###")
+                else:
+                   print ("### successful to kick vlc: vlc is running ###\n")
              else:
                 print ("### something error on reading cmdlist with code=" + str(f[0]) + "\n")
           elif (cmdlist['operation'] == "stop"):
              print ("### stopping vlc ###\n")
-             rtncde = stopvlc().returncode
+             rtncde = stopvlc().poll()
+             print (rtncde)
           else:
              print ("operation is not defined yet: " + cmdlist['operation'] + "\n")
           

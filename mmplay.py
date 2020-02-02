@@ -28,11 +28,8 @@ print ("in ECS connection - " + str (session))  # should delete
 def openPlaylist():
    global r
    readurl = str("https://" + reference.access_url + "/" + reference.bname + "/" + "playlist.txt")
-#   print (readurl)              # should delete
    r = requests.get(readurl)
-#   print (r.status_code)        # should delete
-#   print (r.text)               # should delete
-#   print (r)                    # should delete
+
    if (r.status_code == 200): 
       print ("SUCCESSFUL to GET&READ\n")
    else:
@@ -45,14 +42,14 @@ def playvlc(plist):
    cmdlist = ["vlc"]
    cmdlist.extend (plist.splitlines())
    print (cmdlist)
-   return (subprocess.call (cmdlist))
+   return (subprocess.Popen (cmdlist), stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
 ### Stop vlc
 def stopvlc():
    print ("### start stopvlc ###\n")  # should delete
    cmdlist = ["killall", "vlc"]
    print (cmdlist)
-   return (subprocess.call (cmdlist))
+   return (subprocess.Popen (cmdlist), stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
 ### Read cmdlist
 def rcmd():
@@ -67,38 +64,40 @@ def rcmd():
 
 ### Main Routine ###
 if __name__ == "__main__":
-   f = rcmd()
-   cmdlist = json.loads (f[1])
-   print (cmdlist)              # should delete
-   print (cmdlist['kicked date']) # should delete
-   print (cmdlist['operation']) # should delete
+   while (True):
+       f = rcmd()
+       cmdlist = json.loads (f[1])
+       print (cmdlist)              # should delete
+       print (cmdlist['kicked date']) # should delete
+       print (cmdlist['operation']) # should delete
 
-   if (cmdlist['kicked date'] == "1980/01/01 00:00:01"):
-      cmdlist['kicked date'] = "2020/01/01 23:59:59"
-      cmdlist['kicked date'] = "{0:%Y/%m/%d %H:%M:%S}".format(dtnow)
-      key = b.new_key ('cmdlist.txt')
-      key.set_contents_from_string(json.dumps(cmdlist))
-      key.set_acl('public-read')
+       if (cmdlist['kicked date'] == "1980/01/01 00:00:01"):
+          cmdlist['kicked date'] = "2020/01/01 23:59:59"
+          cmdlist['kicked date'] = "{0:%Y/%m/%d %H:%M:%S}".format(dtnow)
+          key = b.new_key ('cmdlist.txt')
+          key.set_contents_from_string(json.dumps(cmdlist))
+          key.set_acl('public-read')
 
-      if (cmdlist['operation'] == "play"):
-         f = openPlaylist()
+          if (cmdlist['operation'] == "play"):
+             f = openPlaylist()
 
-         if (f[0] == 200):
-            print (f[1].splitlines()) # should delete
-            rtrncde = playvlc(f[1])
-            if (rtrncde == 0):
-               print ("### successful to kick vlc ###\n")
-            else:
-               print ("### fail to kick vlc : code = " + rtrncde + " ###")
-         else:
-            print ("### something error on reading cmdlist with code=" + str(f[0]) + "\n")
-      elif (cmdlist['operation'] == "stop"):
-         print ("### stopping vlc ###\n")
-         rtncde = stopvlc()
-      else:
-         print ("operation is not defined yet: " + cmdlist['operation'] + "\n")
-      
-   else:
-      print ("a command, " + cmdlist['operation'] + ", was found, but ")
-      print ("this command was requested on " + cmdlist['entry date'])
-      print ("then, was done on " + cmdlist['kicked date'] + "\n")
+             if (f[0] == 200):
+                print (f[1].splitlines()) # should delete
+                rtrncde = playvlc(f[1]).returncode
+                if (rtrncde == 0):
+                   print ("### successful to kick vlc ###\n")
+                else:
+                   print ("### fail to kick vlc : code = " + rtrncde + " ###")
+             else:
+                print ("### something error on reading cmdlist with code=" + str(f[0]) + "\n")
+          elif (cmdlist['operation'] == "stop"):
+             print ("### stopping vlc ###\n")
+             rtncde = stopvlc().returncode
+          else:
+             print ("operation is not defined yet: " + cmdlist['operation'] + "\n")
+          
+       else:
+          print ("a command, " + cmdlist['operation'] + ", was found, but ")
+          print ("this command was requested on " + cmdlist['entry date'])
+          print ("then, was done on " + cmdlist['kicked date'] + "\n")
+       

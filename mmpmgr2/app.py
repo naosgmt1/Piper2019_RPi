@@ -7,16 +7,12 @@ import time
 import datetime
 import os
 import sys
-# import re
 import boto
 import redis
 import json
 import requests
 import reference as ref
-#from flask import Flask, render_template, redirect, request, Response, make_response, url_for
 from flask import Flask, render_template, redirect, request, Response, make_response
-#from werkzeug import secure_filename
-#from werkzeug import utils
 import werkzeug
 
 ### PARAMETER ###
@@ -24,12 +20,6 @@ dtnow = datetime.datetime.now()
 print (dtnow)
 
     #### ECS version ####
-# bname = "mplaylist"
-# ecs_access_key_id = "131745189033837095@ecstestdrive.emc.com"
-# ecs_secret_key = "RS/P25qnWmi5C8uGYaBojzAzYXf8dnrNHOYbao9d"
-# ecs_host = "object.ecstestdrive.com"
-# access_url = "131745189033837095.public.ecstestdrive.com"
-
 session = boto.connect_s3(aws_access_key_id=ref.ecs_access_key_id, \
                           aws_secret_access_key=ref.ecs_secret_key, \
                           host=ref.ecs_host)
@@ -40,8 +30,6 @@ if ('VCAP_SERVICES' in os.environ):
     CREDENTIALS = VCAP["rediscloud"][0]["credentials"]
     r = redis.Redis(host=CREDENTIALS["hostname"], port=CREDENTIALS["port"], password=CREDENTIALS["password"])
     print ("Now running in PCF")
-    print ("VCAP is ",end=": ")
-    print (VCAP)
 else:
     print ("ERROR in VCAP_SERVICES", end=": ")
     print (VCAP)
@@ -57,8 +45,6 @@ def allowed_file(filename):
 
 ### Read stations list
 def rstations():
-#   global access_url
-#   global bname
 
    readurl = str ("https://" + ref.access_url + "/" + ref.bname + "/" + "stationslist.txt")
    st = requests.get(readurl)
@@ -72,7 +58,6 @@ def rstations():
 ### Read cmdlist
 def rcmd():
    readurl = str("https://" + ref.access_url + "/" + ref.bname + "/" + "cmdlist.txt")
-   print (readurl)                # should delete
    r = requests.get(readurl)
    if (r.status_code == 200):
       print ("SUCCESSFUL to GET CMD\n")
@@ -84,10 +69,11 @@ def rcmd():
 @app.route('/')
 def menu():
     global r
+    if not r.get("ucounter"):
+        r.set("ucounter","0")
     r.incr('hitcounter')
-    musiccount = r.get('mcounter')
-    reviewcount = r.get ('rcounter')
-    usercount = r.get('ucounter')
+    musiccount = str(r.get('pcounter'), encoding='utf-8')
+    usercount = str(r.get('ucounter'), encoding='utf-8')
     uuid = request.cookies.get('uuid')
     if not uuid:
         print ("uuid cookie was not present")
@@ -98,17 +84,22 @@ def menu():
     print ("resp is ", end=": ")
     print (resp)
 
+    uuid = request.cookies.get('uuid')
+    if not uuid:
+        print ("uuid cookie was not present")
+        uuid = r.incr('ucounter')
+    print ("uuid now is : ")
+    print (uuid)
+    usercount = str(r.get('ucounter'), encoding='utf-8')
+    print ("User counter : ")
+    print (usercount)
+
     resp = make_response (render_template('mainmenu.html', musiccnt=musiccount, ucount=usercount))
-
-    print ("resp is ", end=": ")
-    print (resp)
-
     resp.set_cookie('uuid', str(uuid), max_age=604800)
 
     print ("RETURNING MAIN PAGE")
 
     return resp
-#     return render_template('main_menu.html')
 
 @app.route('/upload_music.html')
 def index():
@@ -126,10 +117,7 @@ def upload():
     rfile = request.files['file']
     print (rfile.filename)
     if rfile and allowed_file(rfile.filename):
-#        print (datetime.now().strftime("%Y%m%d_%H%M%S_"))
         # Make the filename safe, remove unsupported chars
-#        savename = datetime.now().strftime("%Y%m%d_%H%M%S_") \
-#                 + werkzeug.utils.secure_filename(rfile.filename)
         savename = werkzeug.utils.secure_filename(rfile.filename)
         print (savename)
         print ("am here")
@@ -152,7 +140,6 @@ def upload():
         newmusic = 'music' + str(Counter)
         print ("Lets create Redis hash: ")
         print (newmusic)
-#        r.hmset(newmusic,{'name':justname, 'uuid':uuid})
         r.hmset(newmusic,{'name':savename, 'uuid':uuid})
         return"""
         <html>
@@ -176,7 +163,7 @@ def musics():
     global r
     global bname
     r.incr('hitcounter')
-    musiccount = r.get("pcounter")
+    musiccount = str(r.get("pcounter"), encoding='utf-8')
     musicfiles = "<div><label><input type=\"checkbox\" name=\"NO SELECT\" value=\"\"/></label></div>"
 
     for each_music in r.keys('music*'):
@@ -194,21 +181,14 @@ def musics():
     print("===Kicked rstatinos=== with",end=":")
     print(f)
     slist = json.loads (f[1])
-#    print ("type of slist", end=": ")
-#    print (type (slist['stations']['station']))
     musicstations = ""
     for each_station in slist['stations']:
-#    for each_station in slist:
         musicstations = musicstations + "<option value=" \
                       + each_station['link'] \
                       + ">" \
                       + each_station['station'] \
                       + "</option>"
 
-#    print("slist",end=": ")
-#    print(slist)
-    print("musicstatinos",end=": ")
-    print(musicstations)
     pagepart1 = """
 	<html>
 	  <head>
@@ -247,7 +227,6 @@ def musics():
     """
 
     filetable = pagepart1 + musicfiles + pagepart2 + musicstations + pagepart3
-    print (filetable)
     return filetable
 
 @app.route('/setplaylist', methods=['POST'])
@@ -283,6 +262,14 @@ def setplaylist():
 def playbutton():
     global dtnow
     global b
+    musiccount = str(r.get('pcounter'), encoding='utf-8')
+    usercount = str(r.get('ucounter'), encoding='utf-8')
+    uuid = request.cookies.get('uuid')
+    if not uuid:
+        print ("uuid cookie was not present")
+        uuid = r.incr('ucounter')
+
+    dtnow = datetime.datetime.now()
 
     f = rcmd()
     cmdlist = json.loads (f[1])
@@ -305,10 +292,13 @@ def playbutton():
        key = b.new_key ('cmdlist.txt')
        key.set_contents_from_string(json.dumps(cmdlist))
        key.set_acl('public-read')
-       resp = "SUCCESS to SET OPERATION" + cmdop
+       resp = "SUCCESS to SET OPERATION " + cmdop
     print ("playbutton", end=": ")
     print (resp)
-    return resp
+
+    response = make_response (render_template('playbutton_now.html', resp=resp, musiccnt=musiccount, ucount=usercount))
+
+    return response
 
 @app.route('/aboutus')
 def aboutus():

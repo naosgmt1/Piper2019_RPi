@@ -72,7 +72,6 @@ if __name__ == "__main__":
        print (cmdlist['operation']) # should delete
 
        if (cmdlist['kicked date'] == "1980/01/01 00:00:01"):
-          cmdlist['kicked date'] = "2020/01/01 23:59:59"
           cmdlist['kicked date'] = "{0:%Y/%m/%d %H:%M:%S}".format(dtnow)
           key = b.new_key ('cmdlist.txt')
           key.set_contents_from_string(json.dumps(cmdlist))

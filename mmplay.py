@@ -42,14 +42,14 @@ def playvlc(plist):
    cmdlist = ["vlc"]
    cmdlist.extend (plist.splitlines())
    print (cmdlist)
-   return (subprocess.Popen (cmdlist, stderr=subprocess.PIPE, stdout=subprocess.PIPE))
+   return (subprocess.Popen (cmdlist))
 
 ### Stop vlc
 def stopvlc():
    print ("### start stopvlc ###\n")  # should delete
    cmdlist = ["killall", "vlc"]
    print (cmdlist)
-   return (subprocess.Popen (cmdlist, stderr=subprocess.PIPE, stdout=subprocess.PIPE))
+   return (subprocess.Popen (cmdlist))
 
 ### Read cmdlist
 def rcmd():

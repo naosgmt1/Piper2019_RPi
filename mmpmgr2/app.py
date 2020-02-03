@@ -233,6 +233,9 @@ def setplaylist():
     mf = request.form.getlist("musicfiles")       # musicfiles
     ss = request.form.get("selectedstation")      # selectedstation
     text = ""
+    dlfiles = ""
+    musiccount = str(r.get('pcounter'), encoding='utf-8')
+    usercount = str(r.get('ucounter'), encoding='utf-8')
 
     print("mf", end=" = ")
     print(mf)
@@ -242,7 +245,8 @@ def setplaylist():
     for each_file in mf:
        print ("each file", end=": ")
        print (each_file)
-       text = text + each_file + "\n"
+       text = text + "https://" + ref.access_url + "/" + ref.bname + "/" + each_file + "\n"
+       dlfiles = dlfiles + each_file + "\n"
 
     text = text + ss + "\n"
 
@@ -254,7 +258,11 @@ def setplaylist():
     key.set_contents_from_string(text)
     key.set_acl('public-read')
 
-    return "Set playlist.txt, now"
+    resp = "Thanks! just set playlist.txt, now \n" + dlfiles + "\n" + ss + "\n"
+    response = make_response (render_template('playbutton_now.html', resp=resp, musiccnt=musiccount, ucount=usercount))
+
+    return response
+
 
 @app.route('/playbutton')
 def playbutton():
@@ -290,7 +298,7 @@ def playbutton():
        key = b.new_key ('cmdlist.txt')
        key.set_contents_from_string(json.dumps(cmdlist))
        key.set_acl('public-read')
-       resp = "SUCCESS to SET OPERATION " + cmdop
+       resp = "SUCCESS to SET OPERATION \n as " + cmdop
     print ("playbutton", end=": ")
     print (resp)
 

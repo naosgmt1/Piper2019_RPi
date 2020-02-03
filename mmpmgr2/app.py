@@ -83,13 +83,9 @@ def menu():
 
     print ("resp is ", end=": ")
     print (resp)
-
-    uuid = request.cookies.get('uuid')
-    if not uuid:
-        print ("uuid cookie was not present")
-        uuid = r.incr('ucounter')
     print ("uuid now is : ")
     print (uuid)
+
     usercount = str(r.get('ucounter'), encoding='utf-8')
     print ("User counter : ")
     print (usercount)
@@ -121,9 +117,10 @@ def upload():
         savename = werkzeug.utils.secure_filename(rfile.filename)
         print (savename)
         print ("am here")
-        justname = savename.rsplit(".",1)[0]
-        justname = justname + str (int (time.time() * 1000))
-        print (justname)
+### Use just name in case of unique name is required while same name files are uploaded.
+#        justname = savename.rsplit(".",1)[0]
+#        justname = justname + str (int (time.time() * 1000))
+#        print (justname)
         rfile.save(os.path.join(app.config['UPLOAD_FOLDER'], savename))
 
         print ("Uploading " + savename + " as key " + justname)
@@ -146,13 +143,14 @@ def upload():
           <head>
             <link rel=stylesheet type=text/css href="/static/style.css">
             <meta name="viewport" content="width=410, initial-scale=0.90">
+            <meta http-equiv="Refresh" content="15;URL=/">
           </head>
           <body>
             <div class="container">
             <div class="content">
-            <h3>Thank You!</h3>
-            <h4>You have just uploaded a Music to: <br><a href="https://portal.ecstestdrive.com/">ECS Object Storage</a></h4>
-            <a href="/"><h3>Back to main menu</h3></a>
+            <h2>Thank You!</h2>
+            <h3>You have just uploaded a Music to: <br><a href="https://portal.ecstestdrive.com/">ECS Object Storage</a></h3>
+            <h3><a href="/">Back to main menu</a></h3>
         <img src="/static/logo.png" width="270" />
         """
     else: 

@@ -232,6 +232,9 @@ def setplaylist():
     global b
     mf = request.form.getlist("musicfiles")       # musicfiles
     ss = request.form.get("selectedstation")      # selectedstation
+    if not ss:
+       ss = " "
+
     text = ""
     dlfiles = ""
     musiccount = str(r.get('pcounter'), encoding='utf-8')

@@ -123,7 +123,8 @@ def upload():
 #        print (justname)
         rfile.save(os.path.join(app.config['UPLOAD_FOLDER'], savename))
 
-        print ("Uploading " + savename + " as key " + justname)
+#        print ("Uploading " + savename + " as key " + justname)
+        print ("Uploading " + savename + " as key " + savename)
         k = b.new_key(savename)
         k.set_contents_from_filename(app.config['UPLOAD_FOLDER'] + savename)
         k.set_acl('public-read')
